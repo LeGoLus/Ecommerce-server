@@ -1,8 +1,8 @@
 const { authJwt } = require("../middleware");
-const controller = require("../controllers/product.controller");
+const controller = require("../controllers/category.controller");
 const sysUpload = require('../controllers/sysUpload.controller');
 
-const apiPath = 'product';
+const apiPath = 'category';
 //--/api/product
 
 module.exports = function(app) {
@@ -21,7 +21,6 @@ module.exports = function(app) {
 
 
     //--admin role
-    app.get(`/api/${apiPath}/image/:id/:imagename`, [authJwt.verifyToken, authJwt.isAdmin], controller.deleteImage); //--delete image
     app.get(`/api/${apiPath}/public/:id/:status`, [authJwt.verifyToken, authJwt.isAdmin], controller.updateStatus); //--update status
     app.put(`/api/${apiPath}/:id`, sysUpload.upload.array('images', 12), [authJwt.verifyToken, authJwt.isAdmin], controller.update); //--update 
     app.delete(`/api/${apiPath}/:id`, [authJwt.verifyToken, authJwt.isAdmin], controller.delete); //--delete one

@@ -36,6 +36,8 @@ exports.create = function(req, res, next) {
     const _data = {
         pName: req.body.pName,
         pSlug: req.body.pSlug,
+        pStatus: req.body.pStatus,
+        pCategory: req.body.pCategory,
         pQty: req.body.pQty,
         pPrice: req.body.pPrice,
         pPriceSale: req.body.pPriceSale,
@@ -144,6 +146,8 @@ exports.update = function(req, res, next) {
                 //--update
                 obj.pName = body.pName;
                 obj.pSlug = body.pSlug;
+                obj.pStatus = body.pStatus;
+                obj.pCategory = body.pCategory;
                 obj.pQty = body.pQty;
                 obj.pPrice = body.pPrice;
                 obj.pPriceSale = body.pPriceSale;
@@ -248,6 +252,47 @@ exports.deleteImage = (req, res, next) => {
     }
 
 };
+
+// Delete a Product with the specified id in the request
+exports.updateStatus = (req, res, next) => {
+
+    const Id = parseInt(req.params.id);
+    const status = req.params.status;
+
+    if (Id && Id > 0) {
+
+        Product.findOne({ where: { id: Id } })
+            .then(obj => {
+                if (!obj) {
+                    return res.status(404).send({ message: "Obj Not found." });
+                }
+
+                //--update status
+                obj.pStatus = status; //--only one field
+                try {
+                    obj.save().
+                    then(saveData => {
+                            res.status(200).send({ data: saveData, message: "Update success!" });
+                        })
+                        .catch(err => {
+                            res.status(500).send({ message: err.message });
+                        });
+
+                } catch (error) {
+                    res.status(500).send({ message: error.message });
+                }
+                //-------------
+            })
+            .catch(err => {
+                res.status(500).send({ message: err.message });
+            });
+
+    } else {
+        res.status(500).send({ message: "id must have value!" });
+    }
+
+};
+
 
 // Delete One Product from the database.
 exports.delete = (req, res) => {
